@@ -1,0 +1,5 @@
+<form action="{% url 'reveal_hint' %}" method="post">
+{% csrf_token %}
+{{ reveal_hint_form }}
+<input type="submit" class="btn btn-danger btn-sm" value="Hit me!" />
+</form>

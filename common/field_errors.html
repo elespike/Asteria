@@ -1,0 +1,17 @@
+{% if field.errors %}
+<div class="row container">
+    <div class="col-sm-6 alert alert-danger">
+        {{ field.errors }}
+    </div>
+</div>
+{% endif %}
+
+{% for message in messages %}
+{% if 'field_errors' in message.tags and field.name in message.tags %}
+<div class="row container">
+    <div class="col-sm-6 alert alert-danger">
+        {{ message }}
+    </div>
+</div>
+{% endif %}
+{% endfor %}

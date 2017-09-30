@@ -1,0 +1,31 @@
+{% block header %}
+{% endblock %}
+{% block form_action %}
+{% endblock %}
+    {% csrf_token %}
+    {% for field in form.hidden_fields %}
+    {{ field }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
+    <div class="container form-group">
+        <div class="row">
+            {{ field.label_tag }}
+        </div>
+        <div class="row">
+            {{ field }}
+        </div>
+        {% if field.help_text %}
+        <div class="row">
+            {{ field.help_text|safe }}
+        </div>
+        {% else %}
+        <br/>
+        {% endif %}
+        {% include 'field_errors.html' %}
+    </div>
+    {% endfor %}
+    {% block input %}
+    {% endblock %}
+</form>
+{% block footer %}
+{% endblock %}

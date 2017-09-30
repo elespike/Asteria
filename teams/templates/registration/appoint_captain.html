@@ -1,0 +1,9 @@
+{% extends 'registration/form_base.html' %}
+{% block form_header %}
+{% endblock %}
+{% block form_action %}
+<form action="{% url 'appoint_captain' %}" method="post">
+{% endblock %}
+    {% block input %}
+    <input type="submit" class="btn btn-success btn-sm" name="appoint" value="Appoint" />
+    {% endblock %}

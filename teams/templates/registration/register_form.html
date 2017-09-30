@@ -1,0 +1,38 @@
+{% load announcements_helper_tags %}
+
+{% is_registration_open as can_register %}
+
+{% if can_register %}
+
+{% with register_form as form %}
+{% include 'form_errors.html' %}
+{% endwith %}
+{% with team_form as form %}
+{% include 'form_errors.html' %}
+{% endwith %}
+<form action="{% url 'register' %}" method="post">
+    {% csrf_token %}
+    {% for field in joined_fields %}
+    <div class="container form-group">
+        <div class="row">
+            {{ field.label_tag }}
+        </div>
+        <div class="row">
+            {{ field }}
+        </div>
+        <div class="row">
+            {{ field.help_text|safe }}
+        </div>
+        {% include 'field_errors.html' %}
+    </div>
+    {% endfor %}
+    <input type="submit" class="btn btn-success" name="register" value="Register" />
+</form>
+
+{% else %}
+
+<div class="alert alert-danger">
+    Registration is currently closed!
+</div>
+
+{% endif %}

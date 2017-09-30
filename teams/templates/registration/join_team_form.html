@@ -1,0 +1,7 @@
+{% extends 'registration/form_base.html' %}
+{% block form_action %}
+<form action="{% url 'join_team' %}" method="post">
+{% endblock %}
+    {% block input %}
+    <input type="submit" class="btn btn-success" name="join" value="Join" />
+    {% endblock %}

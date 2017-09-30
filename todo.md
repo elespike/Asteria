@@ -1,0 +1,5 @@
+- deployment script
+- logging
+    - logging viewer?
+- create tests? custom commands?
+- graphs?

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load modal_team_forms %}
+
+{% block title %}{{ team.name }}{% endblock %}
+
+{% block content %}
+
+<h3>{{ team.name }} - {{ team.points }} point{% if team.points != 1 %}s{% endif %}!</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Standing</th>
+            {% if team == user.team and user.get_standing_display == 'Captain' %}
+            <th>Promote/Demote</th>
+            <th>Appoint as new Captain</th>
+            {% endif %}
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for player in team.player_set.all %}
+    <tr>
+        <td>
+            {{ player.username }}
+        </td>
+        <td>
+            {{ player.get_standing_display }}
+        </td>
+        {% if team == user.team and user.get_standing_display == 'Captain' %}
+        <td>
+            {% if player.get_standing_display == 'Moderator' %}
+            {% show_promote_demote_form player.username 'False' %}
+            {% endif %}
+            {% if player.get_standing_display == 'Player' %}
+            {% show_promote_demote_form player.username 'True' %}
+            {% endif %}
+        </td>
+        <td>
+            {% if user.username != player.username %}
+            {% show_appoint_captain_form player.username %}
+            {% endif %}
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% if team == user.team and user.get_standing_display == 'Captain' %}
+<h3>Team Administration</h3>
+<div class="row">
+    <div class="col-sm-3">
+        {% show_change_team_name_form %}
+    </div>
+    <div class="col-sm-3">
+        {% show_change_team_password_form %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

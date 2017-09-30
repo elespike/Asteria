@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% load challenges_helper_tags %}
+
+{% block title %}Levels{% endblock %}
+
+{% block content %}
+
+{% for level in levels %}
+{% is_locked level user.team as level_locked %}
+{% percentage_completed level user.team as currently_completed %}
+
+<div class="col-md-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>
+                <a href="{% url 'level' level.number %}">{{ level }}</a>
+                <div class="pull-right">
+                    {% if level_locked %}
+                    <span class="glyphicon glyphicon-lock"></span>
+                    {% elif currently_completed == 100 %}
+                    <span class="glyphicon glyphicon-check"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-unchecked"></span>
+                    {% endif %}
+                </div>
+            </h4>
+        </div>
+
+        {% if level.description %}
+        <div class="panel-body">{{ level.description|safe }}</div>
+        {% endif %}
+
+        {% if user.team and currently_completed < 100 %}
+        <div class="panel-body text-center">
+
+        {% if not level_locked %}
+            {{ currently_completed }}% complete!
+            <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{ currently_completed }}%"></div>
+            </div>
+        {% endif %}
+
+        {% if user.team.points < level.points_required %}
+            {{ level.points_required }} point{% if level.points_required != 1 %}s{% endif %} required to unlock!
+            <div class="progress">
+                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:{% divide user.team.points level.points_required 'True' %}%"></div>
+            </div>
+        {% endif %}
+
+        {% if forloop.counter0 > 0 %}
+        {% get_previous_level level as previous_level %}
+        {% percentage_completed previous_level user.team as previous_completed %}
+        {% if previous_completed < level.percentage_required %}
+            {{ level.percentage_required }}% of <a href="{% url 'level' previous_level.number %}">{{ previous_level }}</a> required to unlock!
+            <div class="progress">
+                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:{% divide previous_completed level.percentage_required 'True' %}%"></div>
+            </div>
+        {% endif %}
+        {% endif %}
+
+        {% for required_challenge in level.challenges_required.all %}
+        {% is_solved required_challenge user.team as challenge_solved %}
+        {% if not challenge_solved %}
+        {% if forloop.counter == 1 %}
+        <p>Challenges required to unlock:</p>
+        {% endif %}
+        <a href="{% url 'challenge' required_challenge.slug %}">{{ required_challenge }}</a>
+        {% if forloop.counter < level.challenges_required.all|length %}&nbsp;&nbsp;|&nbsp;&nbsp;{% endif %}
+        {% endif %}
+        {% endfor %}
+
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

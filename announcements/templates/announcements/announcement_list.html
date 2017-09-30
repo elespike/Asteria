@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% load announcements_helper_tags %}
+{% load tz %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+
+<script>
+INTERVAL = 1000;
+
+function updateClock(interval, seconds, minutes, hours, days) {
+    var i = parseInt(interval);
+    var s = parseInt(seconds.innerHTML);
+    s += i;
+    seconds.innerHTML = s;
+
+    if (seconds.innerHTML < 0) {
+        seconds.innerHTML = 59;
+        var m = parseInt(minutes.innerHTML);
+        m += i;
+        minutes.innerHTML = m;
+    }
+    if (seconds.innerHTML > 59) {
+        seconds.innerHTML = 0;
+        var m = parseInt(minutes.innerHTML);
+        m += i;
+        minutes.innerHTML = m;
+    }
+
+    if (minutes.innerHTML < 0) {
+        minutes.innerHTML = 59;
+        var h = parseInt(hours.innerHTML);
+        h += i;
+        hours.innerHTML = h;
+    }
+    if (minutes.innerHTML > 59) {
+        minutes.innerHTML = 0;
+        var h = parseInt(hours.innerHTML);
+        h += i;
+        hours.innerHTML = h;
+    }
+
+    if (hours.innerHTML < 0) {
+        hours.innerHTML = 23;
+        var d = parseInt(days.innerHTML);
+        d += i;
+        days.innerHTML = d;
+    }
+    if (hours.innerHTML > 23) {
+        hours.innerHTML = 0;
+        var d = parseInt(days.innerHTML);
+        d += i;
+        days.innerHTML = d;
+    }
+
+    if (days.innerHTML < 0) {
+        days   .innerHTML = 0
+        hours  .innerHTML = 0
+        minutes.innerHTML = 0
+        seconds.innerHTML = 0
+    }
+}
+</script>
+
+{% get_next_event 'ctf' as next_ctf_event %}
+{% get_next_event 'registration' as next_registration_event %}
+{% get_total_seconds_til next_ctf_event as total_seconds_til_ctf_event %}
+{% get_total_seconds_til next_registration_event as total_seconds_til_registration_event %}
+
+{% if total_seconds_til_ctf_event > 0 %}
+
+<div class="container text-center">
+
+    <div class="well well-sm" style="font-size:48pt">
+        {{ next_ctf_event.pretty }}
+    </div>
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="font-size:60pt">
+                <span id="days_til_ctf_event">{% get_days_til next_ctf_event %}</span>
+            </div>
+            <div class="panel-body">
+                day(s)
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="font-size:60pt">
+                <span id="hours_til_ctf_event">{% get_hours_til next_ctf_event %}</span>
+            </div>
+            <div class="panel-body">
+                hour(s)
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="font-size:60pt">
+                <span id="minutes_til_ctf_event">{% get_minutes_til next_ctf_event %}</span>
+            </div>
+            <div class="panel-body">
+                minute(s)
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="font-size:60pt">
+                <span id="seconds_til_ctf_event">{% get_seconds_til next_ctf_event %}</span>
+            </div>
+            <div class="panel-body">
+                second(s)
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+var days_til_ctf_event    = document.getElementById('days_til_ctf_event');
+var hours_til_ctf_event   = document.getElementById('hours_til_ctf_event');
+var minutes_til_ctf_event = document.getElementById('minutes_til_ctf_event');
+var seconds_til_ctf_event = document.getElementById('seconds_til_ctf_event');
+
+setInterval(function () { updateClock(-1, seconds_til_ctf_event, minutes_til_ctf_event, hours_til_ctf_event, days_til_ctf_event) }, INTERVAL);
+
+</script>
+
+{% endif %}
+
+{% if total_seconds_til_registration_event > 0 and next_registration_event.dt != next_ctf_event.dt %}
+
+<div class="container text-center" style="font-size:14pt">
+    <code style="background:#464545;color:white">
+    {{ next_registration_event.pretty }}
+    <span id="days_til_registration_event">{% get_days_til next_registration_event %}</span>d
+    <span id="hours_til_registration_event">{% get_hours_til next_registration_event %}</span>h
+    <span id="minutes_til_registration_event">{% get_minutes_til next_registration_event %}</span>m
+    <span id="seconds_til_registration_event">{% get_seconds_til next_registration_event %}</span>s
+    </code>
+</div>
+
+<script>
+
+var days_til_registration_event    = document.getElementById('days_til_registration_event');
+var hours_til_registration_event   = document.getElementById('hours_til_registration_event');
+var minutes_til_registration_event = document.getElementById('minutes_til_registration_event');
+var seconds_til_registration_event = document.getElementById('seconds_til_registration_event');
+
+setInterval(function () { updateClock(-1, seconds_til_registration_event, minutes_til_registration_event, hours_til_registration_event, days_til_registration_event) }, INTERVAL);
+
+</script>
+
+{% endif %}
+
+{% for announcement in announcements %}
+{% should_post_announcement announcement.post_time as post %}
+{% if post %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1>{{ announcement }}</h1>
+        </div>
+        <div class="panel-body">
+            {{ announcement.markup|safe }}
+        </div>
+        <div class="panel-footer">
+            {% get_current_timezone as time_zone %}
+            <h6>Posted on {{ announcement.post_time|localtime }} {{ time_zone }}</h6>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

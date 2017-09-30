@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load modal_team_forms %}
+
+{% block title %}{{ player.username }}{% endblock %}
+
+{% block content %}
+
+<h3>
+    {{ player.username }}
+    <br/>
+    {% if not player.team %}
+</h3>
+    <div class="alert alert-danger">
+        You must <a class="alert-anchor" href="" data-toggle="modal" data-target="#changeTeamModal">create or join a team</a> in order to participate!
+    </div>
+    {% else %}
+    <small>{{ player.get_standing_display }} of {{ player.team }}</small>
+    {% endif %}
+</h3>
+
+{% url 'player' user.slug as player_url %}
+{% if player_url == request.path_info %}
+
+<p>
+{% if player.team %}
+<button class="btn btn-warning" data-toggle="modal" data-target="#changeTeamModal">Change Team</button>
+{% endif %}
+<div id="changeTeamModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Jump ship</h4>
+            </div>
+            <div class="modal-body">
+                {% show_join_team_form %}
+            </div>
+        </div>
+    </div>
+</div>
+</p>
+
+<p>
+<button class="btn btn-warning" data-toggle="modal" data-target="#changePasswordModal">Change Password</button>
+<div id="changePasswordModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Change your password</h4>
+            </div>
+            <div class="modal-body">
+                {% show_password_change_form player %}
+            </div>
+        </div>
+    </div>
+</div>
+</p>
+{% endif %}
+{% endblock %}

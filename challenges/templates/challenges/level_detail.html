@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% load challenges_helper_tags %}
+
+{% block title %}{{ level }}{% endblock %}
+
+{% block content %}
+
+{% is_locked level user.team as level_locked %}
+{% percentage_completed level user.team as currently_completed %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1>{{ level }}
+            <div class="pull-right">
+                {% if level_locked %}
+                <span class="glyphicon glyphicon-lock"></span>
+                {% elif currently_completed == 100 %}
+                <span class="glyphicon glyphicon-check"></span>
+                {% else %}
+                <span class="glyphicon glyphicon-unchecked"></span>
+                {% endif %}
+            </div>
+        </h1>
+    </div>
+    {% if level.description %}
+    <div class="panel-body">{{ level.description|safe }}</div>
+    {% endif %}
+
+    <div class="panel-body">
+        {% if not level_locked and currently_completed < 100 %}
+        <div class="progress">
+            <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{ currently_completed }}%"></div>
+        </div>
+        {% endif %}
+
+        {% any_bonus level.challenge_set.all as any_bonus %}
+        {% any_depreciation level.challenge_set.all as any_depreciation %}
+        {% any_penalty level.challenge_set.all as any_penalty %}
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Challenge</th>
+                    <th>Points</th>
+                    {% if any_bonus %}
+                    <th>Bonus<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="X (N left) means X additional points will be awarded to the next N teams to complete this challenge"></span></th>
+                    {% endif %}
+                    {% if any_depreciation %}
+                    <th>Depreciation<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="This challenge will lose these many points on each correct submission by any team"></span></th>
+                    {% endif %}
+                    {% if any_penalty %}
+                    <th>Penalty<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Your team will lose these many points for each of its incorrect submissions"></span></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for challenge in level.challenge_set.all %}
+                {% is_locked challenge user.team as challenge_locked %}
+                {% is_solved challenge user.team as challenge_solved %}
+                {% percentage_completed challenge.category user.team as category_completed %}
+                <tr>
+                    <td>
+                        {% if category_completed == 100 %}
+                        <span class="glyphicon glyphicon-check"></span>
+                        {% endif %}
+                        <a href="{% url 'category' challenge.category.slug %}">{{ challenge.category }}</a>
+                    </td>
+
+                    <td>
+                        {% if challenge_locked %}
+                        <span class="glyphicon glyphicon-lock"></span>
+                        {% elif challenge_solved %}
+                        <span class="glyphicon glyphicon-check"></span>
+                        {% else %}
+                        <span class="glyphicon glyphicon-unchecked"></span>
+                        {% endif %}
+                        <a href="{% url 'challenge' challenge.slug %}">{{ challenge }}</a>
+                    </td>
+
+                    <td>{{ challenge.points }}</td>
+
+                    {% if any_bonus %}
+                    {% if challenge.bonus_points %}
+                    <td>{{ challenge.bonus_points }} ({{ challenge.bonus_limit }} left)</td>
+                    {% else %}
+                    <td>0</td>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if any_depreciation %}
+                    <td>{{ challenge.depreciation }}</td>
+                    {% endif %}
+
+                    {% if any_penalty %}
+                    <td>{{ challenge.penalty }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% endblock %}

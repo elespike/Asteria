@@ -1,0 +1,14 @@
+<form action="{% url 'submit_flag' %}" method="post">
+{% csrf_token %}
+{% for field in submit_flag_form.hidden_fields %}
+<p>
+{{ field }}
+</p>
+{% endfor %}
+{% for field in submit_flag_form.visible_fields %}
+<p>
+{{ field }}
+</p>
+{% endfor %}
+<input type="submit" class="btn btn-success btn-sm" value="Awyeah!" />
+</form>

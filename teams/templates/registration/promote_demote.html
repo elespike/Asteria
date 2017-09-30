@@ -1,0 +1,14 @@
+{% extends 'registration/form_base.html' %}
+{% block form_header %}
+{% endblock %}
+{% block form_action %}
+<form action="{% url 'promote_demote' %}" method="post">
+{% endblock %}
+    {% block input %}
+    {% if player.get_standing_display == 'Moderator' %}
+    <input type="submit" class="btn btn-danger btn-sm" name="demote" value="Demote" />
+    {% endif %}
+    {% if player.get_standing_display == 'Player' %}
+    <input type="submit" class="btn btn-success btn-sm" name="promote" value="Promote" />
+    {% endif %}
+    {% endblock %}

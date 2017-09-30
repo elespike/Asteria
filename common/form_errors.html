@@ -1,0 +1,27 @@
+{% with 'Whoops! Not&nbsp;so&nbsp;fast... Uh&nbsp;oh...' as error_captions %}
+
+{% if form.non_field_errors %}
+<div class="row">
+    <div class="col-sm-12 alert alert-danger">
+        <p><strong>{{ error_captions.split|random|safe }}</strong></p>
+        {% for form_error in form.non_field_errors %}
+        {{ form_error|safe }}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% for message in messages %}
+{% if 'field_errors' not in message.tags %}
+<div class="row">
+    <div class="col-sm-12 alert alert-{{ message.tags }}">
+        {% if 'danger' in message.tags %}
+        <p><strong>{{ error_captions.split|random|safe }}</strong></p>
+        {% endif %}
+        {{ message }}
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endwith %}
