@@ -80,7 +80,7 @@ class Flag(models.Model):
 
 class Hint(models.Model):
     challenge = models.ForeignKey               (Challenge)
-    hint_text = models.TextField                (unique=True)
+    hint_text = models.TextField                ()
     penalty   = models.PositiveSmallIntegerField(default=0)
 
     penalty.help_text = 'Subtract these many points from team on hint revelation'

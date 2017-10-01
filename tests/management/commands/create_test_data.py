@@ -2,9 +2,9 @@ from django.core.management.base import BaseCommand
 import challenges.models as challenge_models
 
 class Command(BaseCommand):
-    help = 'Create dummy test data in the current database'
+    help = 'Create dummy test data in the current database.'
 
-    def handle(self, * args, **kwargs):
+    def handle(self, *args, **kwargs):
         for i in range(1, 5):
             category = challenge_models.Category.objects.create(
                 title       = 'category %s' % i        ,
