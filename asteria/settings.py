@@ -87,7 +87,7 @@ CTF_START          = timezone.make_aware(CTF_START         )
 REGISTRATION_END   = timezone.make_aware(REGISTRATION_END  )
 CTF_END            = timezone.make_aware(CTF_END           )
 
-MAX_TEAM_SIZE = config['Teams']['Max team size']
+MAX_TEAM_SIZE = int(config['Teams']['Max team size'])
 
 LOGIN_URL           = 'login'
 LOGIN_REDIRECT_URL  = 'challenges'
