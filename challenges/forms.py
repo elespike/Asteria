@@ -42,6 +42,9 @@ class SubmitFlagForm(forms.Form):
         if challenge is None:
             raise forms.ValidationError('Invalid challenge specified!')
 
+        if not self.player.is_authenticated:
+            raise forms.ValidationError('User not logged in!')
+
         if is_locked(challenge, self.player.team):
             raise forms.ValidationError('This level is currently locked or the CTF is not currently active!')
 

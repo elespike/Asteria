@@ -9,7 +9,7 @@ from teams.models                                         import Player, Team
 
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(max_length=128, required=False, help_text='Optional for account creation but required for password reset.')
+    email = forms.EmailField(max_length=64, required=False, help_text='Optional for account creation but required for password reset.')
 
     class Meta(UserCreationForm.Meta):
         model  = Player
@@ -104,7 +104,7 @@ def validate_target_player(player, target_player_username):
 
 
 class PromoteOrDemotePlayer(forms.Form):
-    target_player_username = forms.CharField   (max_length=64, widget=forms.HiddenInput)
+    target_player_username = forms.CharField   (max_length=32, widget=forms.HiddenInput)
     promote                = forms.BooleanField(required=False, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
@@ -122,7 +122,7 @@ class PromoteOrDemotePlayer(forms.Form):
 
 
 class AppointNewCaptain(forms.Form):
-    target_player_username = forms.CharField(max_length=64, widget=forms.HiddenInput)
+    target_player_username = forms.CharField(max_length=32, widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         self.player = kwargs.pop('player', None)

@@ -161,6 +161,8 @@ setInterval(function () { updateClock(-1, seconds_til_registration_event, minute
 
 {% endif %}
 
+<br/>
+
 {% for announcement in announcements %}
 {% should_post_announcement announcement.post_time as post %}
 {% if post %}
@@ -173,8 +175,7 @@ setInterval(function () { updateClock(-1, seconds_til_registration_event, minute
             {{ announcement.markup|safe }}
         </div>
         <div class="panel-footer">
-            {% get_current_timezone as time_zone %}
-            <h6>Posted on {{ announcement.post_time|localtime }} {{ time_zone }}</h6>
+            <h6>Posted on {{ announcement.post_time|localtime }}</h6>
         </div>
     </div>
 </div>

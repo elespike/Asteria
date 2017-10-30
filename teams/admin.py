@@ -20,6 +20,7 @@ class PlayerInLine(admin.TabularInline):
 class TeamAdmin(admin.ModelAdmin):
     inlines = [PlayerInLine]
     list_display = ['__str__', 'team_size', 'points', 'team_captain']
+    search_fields = ['name']
 
     def team_size(self, obj):
         return len(obj.player_set.all())

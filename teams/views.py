@@ -102,7 +102,7 @@ def change_team_password(request):
         new_team_password = form.cleaned_data['new_team_password']
 
         team = request.user.team
-        team.password = new_team_password
+        team.password = make_password(new_team_password)
         team.save()
 
     else:

@@ -52,7 +52,7 @@
         <div class="row">
             {% with len_links=challenge.link_set.all|length len_files=challenge.file_set.all|length %}
             {% for link in challenge.link_set.all %}
-            <div class="col-md-{% get_cols len_links|add:len_files %}"><a href="{{ link.url }}">{{ link }}</a></div>
+            <div class="col-md-{% get_cols len_links|add:len_files %}"><a href="{{ link.url }}" target="_blank">{{ link }}</a></div>
             {% endfor %}
             {% for file in challenge.file_set.all %}
             <div class="col-md-{% get_cols len_links|add:len_files %}"><a href="{{ file.uploaded_file.url }}">{{ file }}</a></div>
@@ -66,10 +66,10 @@
     <div class="panel-footer">
         {% if hint in user.team.hints.all %}
         <div class="row">
-            <div class="container">
+            <div class="container-fluid">
                 <button class="btn btn-success btn-sm" data-toggle="collapse" data-target="#show_{{ hint.pk }}">Toggle hint #{{ forloop.counter }}</button>
             </div>
-            <div id="show_{{ hint.pk }}" class="container collapse">
+            <div id="show_{{ hint.pk }}" class="collapse container-fluid">
                 <blockquote><h6><em>{{ hint.hint_text }}</em></h6></blockquote>
             </div>
         </div>

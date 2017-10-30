@@ -28,9 +28,10 @@ th > span { padding-left: 5px; }
     background-color: #c87f0a;
 }
 
+.alert-warning,
 .bg-warning,
 .btn-warning,
-.alert-warning       { color: #222222; }
+.label-warning       { color: #222222; }
 .glyphicon-lock      { color: #e74c3c; }
 .glyphicon-check     { color: #00bc8c; }
 .glyphicon-unchecked { color: #c87f0a; }
