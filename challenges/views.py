@@ -108,7 +108,7 @@ def submit_flag(request):
         # Wrong flag
         else:
             error_msg = BAD_FLAG
-            if team.points:
+            if challenge.penalty and team.points:
                 error_msg += PENALTY.format(challenge.penalty, team.name)
                 team.points -= challenge.penalty
             messages.error(request, error_msg)
