@@ -26,7 +26,7 @@ class Team(models.Model):
 
 
 class Player(AbstractUser):
-    team = models.ForeignKey(Team, blank=True, null=True)
+    team = models.ForeignKey(Team, blank=True, null=True, on_delete=models.CASCADE)
 
     PLAYER    = 0
     MODERATOR = 1

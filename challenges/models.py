@@ -44,8 +44,9 @@ class Level(models.Model):
 
 
 class Challenge(models.Model):
-    level        = models.ForeignKey               (Level)
-    category     = models.ForeignKey               (Category)
+    level        = models.ForeignKey(Level, on_delete=models.CASCADE)
+    category     = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     points       = models.PositiveSmallIntegerField(default=0)
     bonus_points = models.PositiveSmallIntegerField(default=0)
     bonus_limit  = models.PositiveSmallIntegerField(default=0)
@@ -71,7 +72,7 @@ class Challenge(models.Model):
 
 
 class Flag(models.Model):
-    challenge = models.ForeignKey(Challenge)
+    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     value     = models.CharField (unique=True, max_length=128, default=uuid4)
 
     def __str__(self):
@@ -79,7 +80,7 @@ class Flag(models.Model):
 
 
 class Hint(models.Model):
-    challenge = models.ForeignKey               (Challenge)
+    challenge = models.ForeignKey               (Challenge, on_delete=models.CASCADE)
     hint_text = models.TextField                ()
     penalty   = models.PositiveSmallIntegerField(default=0)
 
@@ -90,7 +91,7 @@ class Hint(models.Model):
 
 
 class Link(models.Model):
-    challenge   = models.ForeignKey(Challenge)
+    challenge   = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     url         = models.URLField  (unique=True)
     description = models.CharField (max_length=64)
 
@@ -101,7 +102,7 @@ class Link(models.Model):
 
 
 class File(models.Model):
-    challenge     = models.ForeignKey(Challenge)
+    challenge     = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     uploaded_file = models.FileField (unique=True, upload_to='uploads/')
     description   = models.CharField (max_length=64)
 

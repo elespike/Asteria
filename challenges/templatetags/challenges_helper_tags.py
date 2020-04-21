@@ -15,7 +15,7 @@ def divide(dividend, divisor, percentage=False):
         quotient *= 100
     return int(quotient)
 
-@register.assignment_tag
+@register.simple_tag
 def get_previous_level(current_level):
     previous_level = Level.objects.filter(number__lt=current_level.number).last()
     return previous_level
@@ -28,28 +28,28 @@ def get_cols(num_elements):
     else:
         return cols
 
-@register.assignment_tag
+@register.simple_tag
 def any_bonus(challenge_list):
     for challenge in challenge_list:
         if challenge.bonus_points > 0 and challenge.bonus_limit > 0:
             return True
     return False
 
-@register.assignment_tag
+@register.simple_tag
 def any_depreciation(challenge_list):
     for challenge in challenge_list:
         if challenge.depreciation > 0:
             return True
     return False
 
-@register.assignment_tag
+@register.simple_tag
 def any_penalty(challenge_list):
     for challenge in challenge_list:
         if challenge.penalty > 0:
             return True
     return False
 
-@register.assignment_tag
+@register.simple_tag
 def is_solved(challenge, team):
     if not team:
         return False
@@ -62,7 +62,7 @@ def is_solved(challenge, team):
 
     return False
 
-@register.assignment_tag
+@register.simple_tag
 def percentage_completed(level_or_category, team):
     if not team or not level_or_category:
         return 0
@@ -75,7 +75,7 @@ def percentage_completed(level_or_category, team):
 
     return divide(completed_challenges, len(challenges), percentage=True)
 
-@register.assignment_tag
+@register.simple_tag
 def is_locked(challenge_or_level, team):
     if not team:
         return True

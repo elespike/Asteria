@@ -19,27 +19,27 @@ def get_time_til(event):
             return time_til_event
     return timedelta()
 
-@register.assignment_tag
+@register.simple_tag
 def get_days_til(event):
     return trunc(get_time_til(event).total_seconds() / 86400)
 
-@register.assignment_tag
+@register.simple_tag
 def get_hours_til(event):
     return trunc((get_time_til(event).total_seconds() / 3600) % 24)
 
-@register.assignment_tag
+@register.simple_tag
 def get_minutes_til(event):
     return trunc((get_time_til(event).total_seconds() / 60) % 60)
 
-@register.assignment_tag
+@register.simple_tag
 def get_seconds_til(event):
     return trunc(get_time_til(event).total_seconds() % 60)
 
-@register.assignment_tag
+@register.simple_tag
 def get_total_seconds_til(event):
     return trunc(get_time_til(event).total_seconds())
 
-@register.assignment_tag
+@register.simple_tag
 def get_next_event(event_type):
     events_dict = {}
     for attr in [a for a in dir(Events) if not a.startswith('__')]:
@@ -54,21 +54,21 @@ def get_next_event(event_type):
     except IndexError:
         return None
 
-@register.assignment_tag
+@register.simple_tag
 def is_ctf_open():
     if get_total_seconds_til(Events.CTF_START)\
     or not get_total_seconds_til(Events.CTF_END):
         return False
     return True
 
-@register.assignment_tag
+@register.simple_tag
 def is_registration_open():
     if get_total_seconds_til(Events.REGISTRATION_START)\
     or not get_total_seconds_til(Events.REGISTRATION_END):
         return False
     return True
 
-@register.assignment_tag
+@register.simple_tag
 def should_post_announcement(post_time):
     if post_time < dtz.localtime():
         return True
