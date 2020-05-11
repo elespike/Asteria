@@ -2,13 +2,12 @@
 {% load modal_team_forms %}
 {% block form_action %}
 <form action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" method="post">
+    No account? <a href="/register/">Register</a>!
 {% endblock %}
     {% block input %}
     <input type="submit" class="btn btn-success" name="login" value="Login" />
     {% endblock %}
 {% block footer %}
-<br/>
-<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">Register</button>
 <hr/>
 {% show_password_reset_form %}
 {% endblock %}

@@ -6,36 +6,38 @@
 
 {% block content %}
 
-{% for category in categories %}
-{% percentage_completed category user.team as currently_completed %}
+<div class="row row-cols-2">
+    {% for category in categories %}
+    {% percentage_completed category user.team as currently_completed %}
 
-<div class="col-md-6">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>
-                <a href="{% url 'category' category.slug %}">{{ category }}</a>
-                <div class="pull-right">
-                    {% if currently_completed == 100 %}
-                    <span class="glyphicon glyphicon-check"></span>
-                    {% endif %}
-                </div>
-            </h4>
-        </div>
-
-        {% if category.description %}
-        <div class="panel-body">{{ category.description|safe }}</div>
-        {% endif %}
-
-        {% if user.team and currently_completed < 100 %}
-        <div class="panel-body text-center">
-            {{ currently_completed }}% complete!
-            <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{ currently_completed }}%"></div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>
+                    <a href="{% url 'category' category.slug %}">{{ category }}</a>
+                    <div class="float-right">
+                        {% if currently_completed == 100 %}
+                        <span class="fas fa-check-circle"></span>
+                        {% endif %}
+                    </div>
+                </h4>
             </div>
-        </div>
-        {% endif %}
 
+            {% if category.description %}
+            <div class="card-body">{{ category.description|safe }}</div>
+            {% endif %}
+
+            {% if user.team %}
+            <div class="card-body text-center">
+                {{ currently_completed }}% complete!
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width:{{ currently_completed }}%"></div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
     </div>
+    {% endfor %}
+    {% endblock %}
 </div>
-{% endfor %}
-{% endblock %}

@@ -48,11 +48,11 @@ class JoinTeamForm(forms.Form):
                     raise forms.ValidationError('Incorrect password for existing team: {}'.format(team_name))
 
             error_msg = 'You must <a class="alert-anchor" href="{}"><strong>appoint a new team captain</strong></a> before changing teams!'
-            if self.player is not None                     \
-            and self.player.team is not None               \
-            and self.player.is_authenticated()             \
-            and len(self.player.team.player_set.all()) > 1 \
-            and self.player.standing == Player.CAPTAIN:
+            if (self.player is not None
+            and self.player.team is not None
+            and self.player.is_authenticated
+            and len(self.player.team.player_set.all()) > 1
+            and self.player.standing == Player.CAPTAIN):
                 raise forms.ValidationError(error_msg.format(reverse('team', args=[self.player.team.slug])))
 
 

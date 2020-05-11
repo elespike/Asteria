@@ -6,8 +6,8 @@
 
 {% block content %}
 
-<h3>{{ team.name }} - {{ team.points }} point{% if team.points != 1 %}s{% endif %}!</h3>
-<table class="table table-striped">
+<h3>{{ team.name }} <small>[{{ team.points }} point{% if team.points != 1 %}s{% endif %}]</small></h3>
+<table class="table table-dark table-striped text-nowrap">
     <thead>
         <tr>
             <th>Player</th>
@@ -48,13 +48,16 @@
     </tbody>
 </table>
 
-{% if team == user.team and user.get_standing_display == 'Captain' %}
+{% if team == user.team and user.get_standing_display != 'Player' %}
 <h3>Team Administration</h3>
 <div class="row">
+    {% if user.get_standing_display == 'Captain' %}
     <div class="col-sm-3">
         {% show_change_team_name_form %}
     </div>
+    {% endif %}
     <div class="col-sm-3">
+        <!--TODO the error message here is scrunched up-->
         {% show_change_team_password_form %}
     </div>
 </div>

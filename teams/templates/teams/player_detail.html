@@ -8,7 +8,7 @@
 
 <h3>
     {{ player.username }}
-    <br/>
+    <br>
     {% if not player.team %}
 </h3>
     <div class="alert alert-danger">
@@ -26,12 +26,12 @@
 {% if player.team %}
 <button class="btn btn-warning" data-toggle="modal" data-target="#changeTeamModal">Change Team</button>
 {% endif %}
-<div id="changeTeamModal" class="modal fade" role="dialog">
+<div id="changeTeamModal" class="modal fade" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Jump ship</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 {% show_join_team_form %}
@@ -43,12 +43,12 @@
 
 <p>
 <button class="btn btn-warning" data-toggle="modal" data-target="#changePasswordModal">Change Password</button>
-<div id="changePasswordModal" class="modal fade" role="dialog">
+<div id="changePasswordModal" class="modal fade" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Change your password</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 {% show_password_change_form player %}

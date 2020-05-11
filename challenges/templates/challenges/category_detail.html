@@ -8,45 +8,43 @@
 
 {% percentage_completed category user.team as currently_completed %}
 
-<div class="panel panel-default">
-    <div class="panel-heading">
+<div class="card">
+    <div class="card-header">
         <h1>{{ category }}
-            <div class="pull-right">
+            <div class="float-right">
                 {% if currently_completed == 100 %}
-                <span class="glyphicon glyphicon-check"></span>
+                <span class="fas fa-check-circle"></span>
                 {% endif %}
             </div>
         </h1>
     </div>
     {% if category.description %}
-    <div class="panel-body">{{ category.description|safe }}</div>
+    <div class="card-body">{{ category.description|safe }}</div>
     {% endif %}
 
-    <div class="panel-body">
-        {% if currently_completed < 100 %}
+    <div class="card-body">
         <div class="progress">
-            <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{ currently_completed }}%"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width:{{ currently_completed }}%"></div>
         </div>
-        {% endif %}
 
         {% any_bonus category.challenge_set.all as any_bonus %}
         {% any_depreciation category.challenge_set.all as any_depreciation %}
         {% any_penalty category.challenge_set.all as any_penalty %}
 
-        <table class="table table-striped">
+        <table class="table table-dark table-striped text-nowrap">
             <thead>
                 <tr>
                     <th>Level</th>
                     <th>Challenge</th>
                     <th>Points</th>
                     {% if any_bonus %}
-                    <th>Bonus<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="X (N left) means X additional points will be awarded to the next N teams to complete this challenge"></span></th>
+                    <th>Bonus<span class="fas fa-question-circle" data-toggle="tooltip" title="X (N left) means X additional points will be awarded to the next N teams to complete this challenge"></span></th>
                     {% endif %}
                     {% if any_depreciation %}
-                    <th>Depreciation<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="This challenge will lose these many points on each correct submission by any team"></span></th>
+                    <th>Depreciation<span class="fas fa-question-circle" data-toggle="tooltip" title="This challenge will lose these many points on each correct submission by any team"></span></th>
                     {% endif %}
                     {% if any_penalty %}
-                    <th>Penalty<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Your team will lose these many points for each of its incorrect submissions"></span></th>
+                    <th>Penalty<span class="fas fa-question-circle" data-toggle="tooltip" title="Your team will lose these many points for each of its incorrect submissions"></span></th>
                     {% endif %}
                 </tr>
             </thead>
@@ -58,22 +56,22 @@
                 <tr>
                     <td>
                         {% if challenge_locked %}
-                        <span class="glyphicon glyphicon-lock"></span>
+                        <span class="fas fa-lock"></span>
                         {% elif level_completed == 100 %}
-                        <span class="glyphicon glyphicon-check"></span>
+                        <span class="fas fa-check-circle"></span>
                         {% else %}
-                        <span class="glyphicon glyphicon-unchecked"></span>
+                        <span class="fas fa-lock-open"></span>
                         {% endif %}
                         <a href="{% url 'level' challenge.level.number %}">{{ challenge.level }}</a>
                     </td>
 
                     <td>
                         {% if challenge_locked %}
-                        <span class="glyphicon glyphicon-lock"></span>
+                        <span class="fas fa-lock"></span>
                         {% elif challenge_solved %}
-                        <span class="glyphicon glyphicon-check"></span>
+                        <span class="fas fa-check-circle"></span>
                         {% else %}
-                        <span class="glyphicon glyphicon-unchecked"></span>
+                        <span class="fas fa-lock-open"></span>
                         {% endif %}
                         <a href="{% url 'challenge' challenge.slug %}">{{ challenge }}</a>
                     </td>

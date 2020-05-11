@@ -71,54 +71,58 @@ function updateClock(interval, seconds, minutes, hours, days) {
 
 {% if total_seconds_til_ctf_event > 0 %}
 
-<div class="container text-center">
+<div class="text-center">
 
-    <div class="well well-sm" style="font-size:48pt">
+    <div class="card mb-4" style="font-size:48pt">
         {{ next_ctf_event.pretty }}
     </div>
 
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="font-size:60pt">
-                <span id="days_til_ctf_event">{% get_days_til next_ctf_event %}</span>
-            </div>
-            <div class="panel-body">
-                day(s)
-            </div>
-        </div>
-    </div>
+    <div class="row">
 
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="font-size:60pt">
-                <span id="hours_til_ctf_event">{% get_hours_til next_ctf_event %}</span>
-            </div>
-            <div class="panel-body">
-                hour(s)
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header" style="font-size:60pt">
+                    <span id="days_til_ctf_event">{% get_days_til next_ctf_event %}</span>
+                </div>
+                <div class="card-body">
+                    day(s)
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="font-size:60pt">
-                <span id="minutes_til_ctf_event">{% get_minutes_til next_ctf_event %}</span>
-            </div>
-            <div class="panel-body">
-                minute(s)
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header" style="font-size:60pt">
+                    <span id="hours_til_ctf_event">{% get_hours_til next_ctf_event %}</span>
+                </div>
+                <div class="card-body">
+                    hour(s)
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="font-size:60pt">
-                <span id="seconds_til_ctf_event">{% get_seconds_til next_ctf_event %}</span>
-            </div>
-            <div class="panel-body">
-                second(s)
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header" style="font-size:60pt">
+                    <span id="minutes_til_ctf_event">{% get_minutes_til next_ctf_event %}</span>
+                </div>
+                <div class="card-body">
+                    minute(s)
+                </div>
             </div>
         </div>
+
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header" style="font-size:60pt">
+                    <span id="seconds_til_ctf_event">{% get_seconds_til next_ctf_event %}</span>
+                </div>
+                <div class="card-body">
+                    second(s)
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -138,14 +142,12 @@ setInterval(function () { updateClock(-1, seconds_til_ctf_event, minutes_til_ctf
 
 {% if total_seconds_til_registration_event > 0 and next_registration_event.dt != next_ctf_event.dt %}
 
-<div class="container text-center" style="font-size:14pt">
-    <code style="background:#464545;color:white">
+<div class="bg-dark text-center mt-3" style="font-size:14pt">
     {{ next_registration_event.pretty }}
     <span id="days_til_registration_event">{% get_days_til next_registration_event %}</span>d
     <span id="hours_til_registration_event">{% get_hours_til next_registration_event %}</span>h
     <span id="minutes_til_registration_event">{% get_minutes_til next_registration_event %}</span>m
     <span id="seconds_til_registration_event">{% get_seconds_til next_registration_event %}</span>s
-    </code>
 </div>
 
 <script>
@@ -161,22 +163,18 @@ setInterval(function () { updateClock(-1, seconds_til_registration_event, minute
 
 {% endif %}
 
-<br/>
-
 {% for announcement in announcements %}
 {% should_post_announcement announcement.post_time as post %}
 {% if post %}
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h1>{{ announcement }}</h1>
-        </div>
-        <div class="panel-body">
-            {{ announcement.markup|safe }}
-        </div>
-        <div class="panel-footer">
-            <h6>Posted on {{ announcement.post_time|localtime }}</h6>
-        </div>
+<div class="card mt-5">
+    <div class="card-header">
+        <h1>{{ announcement }}</h1>
+    </div>
+    <div class="card-body">
+        {{ announcement.markup|safe }}
+    </div>
+    <div class="card-footer">
+        <h6>Posted on {{ announcement.post_time|localtime }}</h6>
     </div>
 </div>
 {% endif %}
