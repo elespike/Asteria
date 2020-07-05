@@ -1,6 +1,7 @@
 from announcements.templatetags.announcements_helper_tags import is_ctf_open
 from challenges.models import Level
 
+from django.contrib.auth.models import AnonymousUser
 from django.template import Library
 
 
@@ -90,7 +91,7 @@ def is_locked(challenge_or_level, user):
     if user.is_staff or user.is_superuser:
         return False
 
-    if not is_ctf_open():
+    if isinstance(user, AnonymousUser) or not is_ctf_open():
         return True
 
     team = user.team
