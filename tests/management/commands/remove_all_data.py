@@ -1,18 +1,27 @@
-from django.core.management.base import BaseCommand
 import announcements.models as announcement_models
-import challenges.models    as challenge_models
-import teams.models         as team_models
+import challenges.models as challenge_models
+import teams.models as team_models
+
+from django.core.management.base import BaseCommand
+
 
 class Command(BaseCommand):
     help = 'Remove all data from the current database.'
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--keep-superusers'   ,
-            action='store_true'  ,
+            '--keep-superusers',
+            action='store_true',
             dest='keep_superusers',
-            default=False        ,
-            help='Don\'t delete any superusers.'
+            default=False,
+            help="Don't delete any superusers."
+        )
+        parser.add_argument(
+            '--keep-staff-users',
+            action='store_true',
+            dest='keep_staff_users',
+            default=False,
+            help="Don't delete any staff users."
         )
 
     def handle(self, *args, **kwargs):
@@ -26,11 +35,11 @@ class Command(BaseCommand):
         challenge_models.Category .objects.all().delete()
         challenge_models.Level    .objects.all().delete()
 
-        team_models.Team  .objects.all().delete()
+        team_models.Team.objects.all().delete()
 
-        keep_superusers = kwargs.get('keep_superusers')
-        if keep_superusers:
-            team_models.Player.objects.all().exclude(is_superuser=True).delete()
-        else:
-            team_models.Player.objects.all().delete()
-
+        players = team_models.Player.objects.all()
+        if kwargs.get('keep_superusers', False):
+            players = players.exclude(is_superuser=True)
+        if kwargs.get('keep_staff_users', False):
+            players = players.exclude(is_staff=True)
+        players.delete()

@@ -1,30 +1,58 @@
-from common.helper_functions        import issue_errors
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.hashers    import make_password
-from django.contrib.auth.mixins     import LoginRequiredMixin
-from django.http                    import HttpResponseRedirect
-from django.shortcuts               import render
-from django.urls                    import reverse
-from django.utils.text              import slugify
-from django.views.generic           import DetailView, ListView
-from teams.models                   import Player, Team
-
 import teams.forms as team_forms
+
+from common.helper_functions import (
+    issue_errors
+)
+from django.contrib import (
+    messages
+)
+from django.contrib.auth.decorators import (
+    login_required
+)
+from django.contrib.auth.hashers import (
+    make_password
+)
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin
+)
+from django.http import (
+    HttpResponseRedirect
+)
+from django.shortcuts import (
+    render
+)
+from django.urls import (
+    reverse
+)
+from django.utils.text import (
+    slugify
+)
+from django.views.generic import (
+    DetailView,
+    ListView,
+)
+from teams.models import (
+    Player,
+    Team,
+)
 
 
 def register(request):
     register_form = team_forms.RegisterForm(request.POST or None)
-    team_form     = team_forms.JoinTeamForm(request.POST or None)
+    team_form = team_forms.JoinTeamForm(request.POST or None)
 
     if register_form.is_valid() and team_form.is_valid():
         register_form.save()
 
-        player = Player.objects.get(username=register_form.cleaned_data['username'])
+        player = Player.objects.get(
+            username=register_form.cleaned_data['username']
+        )
         player.slug = slugify(player.username)
 
         request.user = player
         join_team(request, player)
 
+        messages.success(request, 'Successfully registered! Please log in.')
         return HttpResponseRedirect(reverse('login'))
 
     joined_fields = list(register_form.visible_fields())
@@ -32,7 +60,7 @@ def register(request):
 
     context = {
         'register_form': register_form,
-        'team_form'    : team_form,
+        'team_form': team_form,
         'joined_fields': joined_fields,
     }
 
@@ -41,20 +69,27 @@ def register(request):
 
 @login_required
 def join_team(request, player=None):
-    form = team_forms.JoinTeamForm(request.POST or None, player=request.user)
+    form = team_forms.JoinTeamForm(
+        request.POST or None,
+        player=request.user
+    )
 
     if form.is_valid():
         if player is None:
             player = request.user
 
-        team_name     = form.cleaned_data['team_name']
+        team_name = form.cleaned_data['team_name']
         team_password = form.cleaned_data['team_password']
         previous_team = player.team
 
         team = Team.objects.filter(name=team_name).first()
 
         if team is None:
-            team = Team(name=team_name, slug=slugify(team_name), password=make_password(team_password))
+            team = Team(
+                name=team_name,
+                slug=slugify(team_name),
+                password=make_password(team_password)
+            )
         if len(team.player_set.all()) == 0:
             team.password = make_password(team_password)
             player.standing = Player.CAPTAIN
@@ -68,7 +103,8 @@ def join_team(request, player=None):
         team.player_set.add(player)
 
         # Remove player's old team if no one is left
-        if previous_team and len(previous_team.player_set.all()) == 0:
+        if (previous_team
+        and len(previous_team.player_set.all()) == 0):
             previous_team.delete()
 
         return HttpResponseRedirect(reverse('team', args=[team.slug]))
@@ -78,7 +114,10 @@ def join_team(request, player=None):
 
 @login_required
 def change_team_name(request):
-    form = team_forms.ChangeTeamName(request.POST or None, player=request.user)
+    form = team_forms.ChangeTeamName(
+        request.POST or None,
+        player=request.user
+    )
 
     if form.is_valid():
         new_team_name = form.cleaned_data['new_team_name']
@@ -91,12 +130,17 @@ def change_team_name(request):
     else:
         issue_errors(request, form)
 
-    return HttpResponseRedirect(reverse('team', args=[request.user.team.slug]))
+    return HttpResponseRedirect(
+        reverse('team', args=[request.user.team.slug])
+    )
 
 
 @login_required
 def change_team_password(request):
-    form = team_forms.ChangeTeamPassword(request.POST or None, player=request.user)
+    form = team_forms.ChangeTeamPassword(
+        request.POST or None,
+        player=request.user
+    )
 
     if form.is_valid():
         new_team_password = form.cleaned_data['new_team_password']
@@ -108,18 +152,23 @@ def change_team_password(request):
     else:
         issue_errors(request, form)
 
-    return HttpResponseRedirect(reverse('team', args=[request.user.team.slug]))
+    return HttpResponseRedirect(
+        reverse('team', args=[request.user.team.slug])
+    )
 
 
 @login_required
 def promote_demote(request):
-    form = team_forms.PromoteOrDemotePlayer(request.POST or None, player=request.user)
+    form = team_forms.PromoteOrDemotePlayer(
+        request.POST or None,
+        player=request.user
+    )
 
     if form.is_valid():
-        target_player_username = form.cleaned_data['target_player_username']
-        promote                = form.cleaned_data['promote']
+        target_username = form.cleaned_data['target_username']
+        promote = form.cleaned_data['promote']
 
-        target_player = Player.objects.get(username=target_player_username)
+        target_player = Player.objects.get(username=target_username)
 
         if promote:
             target_player.standing = Player.MODERATOR
@@ -131,18 +180,23 @@ def promote_demote(request):
     else:
         issue_errors(request, form)
 
-    return HttpResponseRedirect(reverse('team', args=[request.user.team.slug]))
+    return HttpResponseRedirect(
+        reverse('team', args=[request.user.team.slug])
+    )
 
 
 @login_required
 def appoint_captain(request):
-    form = team_forms.AppointNewCaptain(request.POST or None, player=request.user)
+    form = team_forms.AppointNewCaptain(
+        request.POST or None,
+        player=request.user
+    )
 
     if form.is_valid():
-        target_player_username = form.cleaned_data['target_player_username']
+        target_username = form.cleaned_data['target_username']
 
-        target_player = Player.objects.get(username=target_player_username)
-        old_captain   = request.user
+        target_player = Player.objects.get(username=target_username)
+        old_captain = request.user
 
         target_player.standing = Player.CAPTAIN
         old_captain  .standing = Player.MODERATOR
@@ -153,7 +207,9 @@ def appoint_captain(request):
     else:
         issue_errors(request, form)
 
-    return HttpResponseRedirect(reverse('team', args=[request.user.team.slug]))
+    return HttpResponseRedirect(
+        reverse('team', args=[request.user.team.slug])
+    )
 
 
 class PlayerView(LoginRequiredMixin, DetailView):
@@ -173,4 +229,3 @@ class ScoreboardView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(points__gt=0)
-

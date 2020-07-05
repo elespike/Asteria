@@ -37,7 +37,7 @@ $(document).ready(function(){
     <tbody>
 
     {% for challenge in challenges %}
-    {% is_locked challenge user.team as challenge_locked %}
+    {% is_locked challenge user as challenge_locked %}
     {% is_solved challenge user.team as challenge_solved %}
     {% percentage_completed challenge.level user.team as currently_completed %}
     <tr>

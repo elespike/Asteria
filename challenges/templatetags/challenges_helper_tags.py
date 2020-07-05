@@ -1,9 +1,11 @@
 from announcements.templatetags.announcements_helper_tags import is_ctf_open
-from challenges.models                                    import Level
-from common.helper_functions                              import Events
-from django.template                                      import Library
+from challenges.models import Level
+
+from django.template import Library
+
 
 register = Library()
+
 
 @register.simple_tag
 def divide(dividend, divisor, percentage=False):
@@ -15,10 +17,14 @@ def divide(dividend, divisor, percentage=False):
         quotient *= 100
     return int(quotient)
 
+
 @register.simple_tag
 def get_previous_level(current_level):
-    previous_level = Level.objects.filter(number__lt=current_level.number).last()
+    previous_level = Level.objects.filter(
+        number__lt=current_level.number
+    ).last()
     return previous_level
+
 
 @register.simple_tag
 def get_cols(num_elements):
@@ -28,12 +34,14 @@ def get_cols(num_elements):
     else:
         return cols
 
+
 @register.simple_tag
 def any_bonus(challenge_list):
     for challenge in challenge_list:
         if challenge.bonus_points > 0 and challenge.bonus_limit > 0:
             return True
     return False
+
 
 @register.simple_tag
 def any_depreciation(challenge_list):
@@ -42,6 +50,7 @@ def any_depreciation(challenge_list):
             return True
     return False
 
+
 @register.simple_tag
 def any_penalty(challenge_list):
     for challenge in challenge_list:
@@ -49,22 +58,22 @@ def any_penalty(challenge_list):
             return True
     return False
 
+
 @register.simple_tag
 def is_solved(challenge, team):
-    if not team:
+    if team is None:
         return False
-
-    challenge_flags = set(challenge.flag_set.all())
-    team_flags      = set(team     .flags   .all())
-
-    if challenge_flags.intersection(team_flags):
+    elif team and any(
+        flag in challenge.flag_set.all()
+        for flag in team.flags.all()
+    ):
         return True
-
     return False
+
 
 @register.simple_tag
 def percentage_completed(level_or_category, team):
-    if not team or not level_or_category:
+    if team is None or not level_or_category:
         return 0
 
     completed_challenges = 0
@@ -75,28 +84,31 @@ def percentage_completed(level_or_category, team):
 
     return divide(completed_challenges, len(challenges), percentage=True)
 
-@register.simple_tag
-def is_locked(challenge_or_level, team):
-    if not team:
-        return True
 
-    for player in team.player_set.all():
-        if player.is_superuser:
-            return False
+@register.simple_tag
+def is_locked(challenge_or_level, user):
+    if user.is_staff or user.is_superuser:
+        return False
 
     if not is_ctf_open():
+        return True
+
+    team = user.team
+    if team is None:
         return True
 
     level = challenge_or_level
     if hasattr(challenge_or_level, 'level'):
         level = challenge_or_level.level
 
-    if level.points_required > team.points:
+    if team and level.points_required > team.points:
         return True
 
     if level.percentage_required:
         previous_level = Level.objects.filter(number__lt=level.number).last()
-        if previous_level is not None and percentage_completed(previous_level, team) < level.percentage_required:
+        pcent_complete = percentage_completed(previous_level, team)
+        if (previous_level is not None
+        and pcent_complete < level.percentage_required):
             return True
 
     for c in level.challenges_required.all():
@@ -104,4 +116,3 @@ def is_locked(challenge_or_level, team):
             return True
 
     return False
-

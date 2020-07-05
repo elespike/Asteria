@@ -1,6 +1,13 @@
 a > span { padding-right: 5px; }
 th > span { padding-left: 5px; }
 
+.nav-link {
+    color: rgba(255, 255, 255, 1) !important;
+}
+.nav-link:hover {
+    color: #007053 !important;
+}
+
 .alert-anchor {
     color: white;
     font-weight: bold;

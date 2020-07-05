@@ -1,18 +1,41 @@
-from challenges.forms               import RevealHintForm, SubmitFlagForm
-from challenges.models              import Level, Category, Challenge, Hint
-from common.helper_functions        import issue_errors
-from django.contrib                 import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins     import LoginRequiredMixin
-from django.http                    import HttpResponseRedirect
-from django.urls                    import reverse
-from django.views.generic           import ListView, DetailView
+from challenges.forms import (
+    RevealHintForm,
+    SubmitFlagForm,
+)
+from challenges.models import (
+    Level,
+    Category,
+    Challenge,
+    Hint,
+)
+from common.helper_functions import (
+    issue_errors,
+)
+from django.contrib import (
+    messages,
+)
+from django.contrib.auth.decorators import (
+    login_required,
+)
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+)
+from django.http import (
+    HttpResponseRedirect,
+)
+from django.urls import (
+    reverse,
+)
+from django.views.generic import (
+    ListView,
+    DetailView,
+)
 
 
-BAD_FLAG  = 'Incorrect flag!'
+BAD_FLAG = 'Incorrect flag!'
 GOOD_FLAG = 'Well done!'
-NO_TEAM   = 'You must join a team in order to participate!'
-PENALTY   = ' {} points removed from {}!'
+NO_TEAM = 'You are not part of a team!'
+PENALTY = ' {} points removed from {}!'
 
 
 class LevelListView(ListView):
@@ -50,25 +73,28 @@ def reveal_hint(request):
     form = RevealHintForm(request.POST or None, player=request.user)
 
     hint = Hint.objects.filter(pk=form.data.get('hint_id')).first()
-    if form.is_valid():
-        # Validating team here (rather than in forms.py) because we're redirecting,
-        # rather than just displaying form errors on the same challenge page.
+    if hint is not None and form.is_valid():
+        # Validating team here (rather than in forms.py)
+        # because we're redirecting, rather than just displaying form errors
+        # on the same challenge page.
         team = request.user.team
-        if not team:
+        if team is None:
             messages.error(request, NO_TEAM)
-            return HttpResponseRedirect(reverse('player', args=[request.user.slug]))
+            return HttpResponseRedirect(
+                reverse('player', args=[request.user.slug])
+            )
 
         team.hints.add(hint)
         if team.points and hint.penalty:
             team.points -= hint.penalty
-
         team.save()
+
+        return HttpResponseRedirect(
+            reverse('challenge', args=[hint.challenge.slug])
+        )
 
     else:
         issue_errors(request, form)
-
-    if hint is not None:
-        return HttpResponseRedirect(reverse('challenge', args=[hint.challenge.slug]))
     return HttpResponseRedirect(reverse('challenges'))
 
 
@@ -76,16 +102,21 @@ def reveal_hint(request):
 def submit_flag(request):
     form = SubmitFlagForm(request.POST or None, player=request.user)
 
-    challenge = Challenge.objects.filter(pk=form.data.get('challenge_id')).first()
-    if form.is_valid():
+    challenge = Challenge.objects.filter(
+        pk=form.data.get('challenge_id')
+    ).first()
+    if challenge is not None and form.is_valid():
         attempted_flag = form.cleaned_data['attempted_flag']
 
-        # Validating team here (rather than in forms.py) because we're redirecting,
-        # rather than just displaying form errors on the same challenge page.
+        # Validating team here (rather than in forms.py)
+        # because we're redirecting, rather than just displaying form errors
+        # on the same challenge page.
         team = request.user.team
-        if not team:
+        if team is None:
             messages.error(request, NO_TEAM)
-            return HttpResponseRedirect(reverse('player', args=[request.user.slug]))
+            return HttpResponseRedirect(
+                reverse('player', args=[request.user.slug])
+            )
 
         challenge_flags = [flag.value for flag in challenge.flag_set.all()]
 
@@ -115,11 +146,9 @@ def submit_flag(request):
 
         team.save()
 
-    # Form invalid
-    else:
+        return HttpResponseRedirect(
+            reverse('challenge', args=[challenge.slug])
+        )
+    else:  # if challenge is None or not form.is_valid()
         issue_errors(request, form)
-
-    if challenge is not None:
-        return HttpResponseRedirect(reverse('challenge', args=[challenge.slug]))
     return HttpResponseRedirect(reverse('challenges'))
-

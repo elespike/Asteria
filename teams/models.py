@@ -1,8 +1,10 @@
-from challenges.models          import Hint, Flag
+from challenges.models import Hint, Flag
+
 from django.contrib.auth.models import AbstractUser
-from django.core.validators     import MaxValueValidator
-from django.db                  import models
-from uuid                       import uuid4
+from django.core.validators import MaxValueValidator
+from django.db import models
+
+from uuid import uuid4
 
 
 class Team(models.Model):
@@ -11,8 +13,8 @@ class Team(models.Model):
     notes = models.TextField(blank=True)
 
     points.help_text = (
-        "There's no need to manually change a team's points. "
-        "This option is solely available for circumstantial penalties or bonuses."
+        "While there's no need to manually change a team's points, "
+        "this option is available for circumstantial penalties or bonuses."
     )
 
     slug = models.SlugField(unique=True, editable=False, default=uuid4)
@@ -23,28 +25,34 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
-
     class Meta:
         ordering = ['-points', 'slug']
 
 
 class Player(AbstractUser):
-    team = models.ForeignKey(Team, blank=True, null=True, on_delete=models.CASCADE)
+    team = models.ForeignKey(
+        Team,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
 
-    PLAYER    = 0
+    PLAYER = 0
     MODERATOR = 1
-    CAPTAIN   = 2
+    CAPTAIN = 2
     STANDING_CHOICES = [
-        (PLAYER   , 'Player'   ),
+        (PLAYER, 'Player'),
         (MODERATOR, 'Moderator'),
-        (CAPTAIN  , 'Captain'  ),
+        (CAPTAIN, 'Captain'),
     ]
-    standing = models.PositiveIntegerField(choices=STANDING_CHOICES, default=PLAYER, validators=[MaxValueValidator(3)])
+    standing = models.PositiveIntegerField(
+        choices=STANDING_CHOICES,
+        default=PLAYER,
+        validators=[MaxValueValidator(3)]
+    )
 
     slug = models.SlugField(unique=True, editable=False, default=uuid4)
-
 
     class Meta:
         verbose_name = 'player'
         ordering = ['-standing', 'slug']
-

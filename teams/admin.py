@@ -1,6 +1,13 @@
-from django.contrib            import admin
-from django.contrib.auth.admin import Group, UserAdmin
-from teams.models              import Player, Team
+from django.contrib import (
+    admin
+)
+from django.contrib.auth.admin import (
+    UserAdmin
+)
+from teams.models import (
+    Player,
+    Team
+)
 
 
 class PlayerInLine(admin.TabularInline):
@@ -32,11 +39,19 @@ class TeamAdmin(admin.ModelAdmin):
 
 @admin.register(Player)
 class PlayerAdmin(UserAdmin):
-    fieldset  = ('Team membership', {'fields': ['team', 'standing']})
+    fieldset = ('Team membership', {'fields': ['team', 'standing']})
     fieldsets = list(UserAdmin.fieldsets)
     fieldsets.insert(1, fieldset)
 
-    list_display  = ['username', 'email', 'team', 'standing', 'is_staff', 'is_superuser', 'is_active']
+    list_display = [
+        'username',
+        'email',
+        'team',
+        'standing',
+        'is_staff',
+        'is_superuser',
+        'is_active',
+    ]
     list_editable = list_display[1:]
     list_filter   = list_display[3:]
 
@@ -45,8 +60,8 @@ class PlayerAdmin(UserAdmin):
     def save_model(self, request, obj, form, change):
         if obj.team and obj.standing == Player.CAPTAIN:
             for player in obj.team.player_set.all():
-                if player.username != obj.username and player.standing == Player.CAPTAIN:
+                if (player.username != obj.username
+                and player.standing == Player.CAPTAIN):
                     player.standing = Player.MODERATOR
                     player.save()
         super().save_model(request, obj, form, change)
-

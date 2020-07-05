@@ -8,7 +8,7 @@
 
 <div class="row row-cols-2">
     {% for level in levels %}
-    {% is_locked level user.team as level_locked %}
+    {% is_locked level user as level_locked %}
     {% percentage_completed level user.team as currently_completed %}
 
     <div class="col-md-6">

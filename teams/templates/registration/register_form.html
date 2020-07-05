@@ -5,10 +5,10 @@
 {% if can_register %}
 
 {% with register_form as form %}
-{% include 'form_errors.html' %}
+{% include 'form_messages.html' %}
 {% endwith %}
 {% with team_form as form %}
-{% include 'form_errors.html' %}
+{% include 'form_messages.html' %}
 {% endwith %}
 <form action="{% url 'register' %}" method="post">
     {% csrf_token %}
@@ -20,7 +20,7 @@
         <div class="row">
             {{ field }}
         </div>
-        <div class="row">
+        <div class="row mt-1">
             {{ field.help_text|safe }}
         </div>
         {% include 'field_errors.html' %}

@@ -7,7 +7,7 @@
 
 {% block content %}
 
-{% is_locked challenge user.team as challenge_locked %}
+{% is_locked challenge user as challenge_locked %}
 {% is_solved challenge user.team as challenge_solved %}
 
 <div class="card">

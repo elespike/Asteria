@@ -50,7 +50,7 @@
             </thead>
             <tbody>
                 {% for challenge in category.challenge_set.all %}
-                {% is_locked challenge user.team as challenge_locked %}
+                {% is_locked challenge user as challenge_locked %}
                 {% is_solved challenge user.team as challenge_solved %}
                 {% percentage_completed challenge.level user.team as level_completed %}
                 <tr>

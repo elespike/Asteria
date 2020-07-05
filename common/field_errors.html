@@ -1,6 +1,6 @@
 {% if field.errors %}
-<div class="row container">
-    <div class="col-sm-6 alert alert-danger">
+<div class="row">
+    <div class="alert alert-danger mt-1">
         {{ field.errors }}
     </div>
 </div>
@@ -8,8 +8,8 @@
 
 {% for message in messages %}
 {% if 'field_errors' in message.tags and field.name in message.tags %}
-<div class="row container">
-    <div class="col-sm-6 alert alert-danger">
+<div class="row">
+    <div class="alert alert-danger mt-1">
         {{ message }}
     </div>
 </div>

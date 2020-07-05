@@ -64,8 +64,8 @@ function updateClock(interval, seconds, minutes, hours, days) {
 }
 </script>
 
-{% get_next_event 'ctf' as next_ctf_event %}
-{% get_next_event 'registration' as next_registration_event %}
+{% get_next_ctf_event as next_ctf_event %}
+{% get_next_registration_event as next_registration_event %}
 {% get_total_seconds_til next_ctf_event as total_seconds_til_ctf_event %}
 {% get_total_seconds_til next_registration_event as total_seconds_til_registration_event %}
 
@@ -74,7 +74,7 @@ function updateClock(interval, seconds, minutes, hours, days) {
 <div class="text-center">
 
     <div class="card mb-4" style="font-size:48pt">
-        {{ next_ctf_event.pretty }}
+        {{ next_ctf_event.text }}
     </div>
 
     <div class="row">
@@ -143,7 +143,7 @@ setInterval(function () { updateClock(-1, seconds_til_ctf_event, minutes_til_ctf
 {% if total_seconds_til_registration_event > 0 and next_registration_event.dt != next_ctf_event.dt %}
 
 <div class="bg-dark text-center mt-3" style="font-size:14pt">
-    {{ next_registration_event.pretty }}
+    {{ next_registration_event.text }}
     <span id="days_til_registration_event">{% get_days_til next_registration_event %}</span>d
     <span id="hours_til_registration_event">{% get_hours_til next_registration_event %}</span>h
     <span id="minutes_til_registration_event">{% get_minutes_til next_registration_event %}</span>m

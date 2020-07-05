@@ -1,25 +1,31 @@
-from challenges     import models as challenge_models
-from django         import forms
-from django.contrib import admin
-from django.db      import models
+from challenges import (
+    models as challenge_models
+)
+from django import (
+    forms
+)
+from django.contrib import (
+    admin
+)
+from django.db import (
+    models
+)
 
 
 class LevelAdminForm(forms.ModelForm):
-    # Overriding __init__() in order to only display challenges from previous levels.
+    # Override __init__() to only display challenges from previous levels.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        number = self.instance.number
         # In order to avoid errors in the query below.
-        if number is None:
-            number = 0
-        queryset = challenge_models.Challenge.objects.filter(level__number__lt=number)
-
+        number = self.instance.number or 0
+        queryset = challenge_models.Challenge.objects.filter(
+            level__number__lt=number
+        )
         self.fields['challenges_required'].queryset = queryset
 
-
     class Meta:
-        model   = challenge_models.Level
+        model = challenge_models.Level
         exclude = []
 
 
@@ -30,10 +36,15 @@ class ChallengeInline(admin.StackedInline):
 
 @admin.register(challenge_models.Level)
 class LevelAdmin(admin.ModelAdmin):
-    form    = LevelAdminForm
+    form = LevelAdminForm
     inlines = [ChallengeInline]
 
-    list_display  = ['__str__', 'description', 'points_required', 'percentage_required']
+    list_display = [
+        '__str__',
+        'description',
+        'points_required',
+        'percentage_required'
+    ]
     list_editable = list_display[2:]
 
 
@@ -44,18 +55,17 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'description']
 
 
-# In order for the default flag values to always be saved,
-# even if unchanged.
+# To always save the default flag values, even if unchanged.
 class AlwaysChangedModelForm(forms.ModelForm):
     def has_changed(self):
         return True
 
 
 class FlagInline(admin.TabularInline):
-    model   = challenge_models.Flag
+    model = challenge_models.Flag
     min_num = 1
-    extra   = 0
-    form    = AlwaysChangedModelForm
+    extra = 0
+    form = AlwaysChangedModelForm
 
 
 class HintInline(admin.TabularInline):
@@ -63,8 +73,8 @@ class HintInline(admin.TabularInline):
     formfield_overrides = {
         models.TextField: {'widget': forms.Textarea(
             attrs={
-                'rows' : 1 ,
-                'cols' : 32,
+                'rows': 1 ,
+                'cols': 32,
                 'style': 'height: 18px;'
             }
         )}
@@ -92,16 +102,15 @@ class ChallengeAdmin(admin.ModelAdmin):
         FileInline,
     ]
     list_display = [
-        '__str__'     ,
-        'description' ,
-        'level'       ,
-        'category'    ,
-        'points'      ,
+        '__str__',
+        'description',
+        'level',
+        'category',
+        'points',
         'bonus_points',
-        'bonus_limit' ,
+        'bonus_limit',
         'depreciation',
-        'penalty'
+        'penalty',
     ]
     list_editable = list_display[2:]
     list_filter   = list_display[2:4]
-
